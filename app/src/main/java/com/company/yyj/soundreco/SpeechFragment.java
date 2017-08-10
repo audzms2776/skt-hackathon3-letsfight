@@ -1,11 +1,13 @@
 package com.company.yyj.soundreco;
 
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,14 +18,17 @@ import android.widget.TextView;
 
 import com.naver.speech.clientapi.SpeechRecognitionResult;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.ref.WeakReference;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 
 public class SpeechFragment extends Fragment {
-
     private static final String TAG = SpeechFragment.class.getSimpleName();
     private static final String CLIENT_ID = "O9QeYaNYfSKP3Xp04WEO";
 
@@ -71,18 +76,10 @@ public class SpeechFragment extends Fragment {
                 // The first element is recognition result for speech.
                 SpeechRecognitionResult speechRecognitionResult = (SpeechRecognitionResult) msg.obj;
                 List<String> results = speechRecognitionResult.getResults();
-                List<String> uniqueItems = new ArrayList<String>(new HashSet<String>(results));
-                StringBuilder strBuf = new StringBuilder();
-                for (String result : uniqueItems) {
-                    strBuf.append(result);
-                    Log.e("음성 메시지", result);
-
-                    strBuf.append("\n");
-                }
-
+                List<String> uniqueItems = new ArrayList<>(new HashSet<>(results));
+                processBySound(uniqueItems);
+                Log.e("items", uniqueItems.toString());
                 mp.start();
-                mResult = strBuf.toString();
-                txtResult.setText(mResult);
                 break;
 
             case R.id.recognitionError:
@@ -107,6 +104,62 @@ public class SpeechFragment extends Fragment {
         }
     }
 
+    private void processBySound(List<String> results) {
+        for (String item : results) {
+            filterString(item);
+        }
+    }
+
+    private boolean filterString(String item) {
+        boolean filterFlag = false;
+
+        switch (item) {
+            case "hi":
+            case "하이":
+                filterFlag = sendSocketMessage(1);
+                break;
+            case "by":
+            case "바이":
+                filterFlag = sendSocketMessage(2);
+                break;
+            case "옷장":
+                filterFlag = sendSocketMessage(3);
+                break;
+            case "추천":
+                filterFlag = sendSocketMessage(4);
+                break;
+            case "오른쪽":
+                filterFlag = sendSocketMessage(5);
+                break;
+            case "왼쪽":
+                filterFlag = sendSocketMessage(6);
+                break;
+            default:
+                Log.e("filter string", "인식 오류~");
+        }
+
+        return filterFlag;
+    }
+
+    private boolean sendSocketMessage(final int num) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Socket socket = new Socket(MyConstant.SOCKET_ADDR, MyConstant.SOCKET_PORT);
+                    OutputStreamWriter outputStream = new OutputStreamWriter(socket.getOutputStream());
+                    Log.e("socket write data", num + "");
+                    outputStream.write(num + "");
+                    outputStream.close();
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        return true;
+    }
 
     @Nullable
     @Override
@@ -114,9 +167,9 @@ public class SpeechFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_main, container, false);
 
         owner = (MainActivity) getActivity();
-        txtResult = (TextView) view.findViewById(R.id.txt_result);
-        btnStart = (ImageView) view.findViewById(R.id.btn_start);
-        cdsText = (TextView) view.findViewById(R.id.cds_text);
+        txtResult = view.findViewById(R.id.txt_result);
+        btnStart = view.findViewById(R.id.btn_start);
+        cdsText = view.findViewById(R.id.cds_text);
         mp = MediaPlayer.create(owner, R.raw.effectsound);
         handler = new RecognitionHandler(this);
         naverRecognizer = new NaverRecognizer(owner, handler, CLIENT_ID);
