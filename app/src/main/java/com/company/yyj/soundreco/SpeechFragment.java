@@ -161,6 +161,8 @@ public class SpeechFragment extends Fragment {
         return true;
     }
 
+    boolean recognized = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -175,24 +177,39 @@ public class SpeechFragment extends Fragment {
         naverRecognizer = new NaverRecognizer(owner, handler, CLIENT_ID);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 if (!naverRecognizer.getSpeechRecognizer().isRunning()) {
+//                    recognized = true;
                     // Start button is pushed when SpeechRecognizer's state is inactive.
                     // Run SpeechRecongizer by calling recognize().
                     mResult = "";
                     txtResult.setText("Connecting...");
                     btnStart.setImageResource(R.drawable.microphone_on);
                     naverRecognizer.recognize();
+//                    recognized = false;
                 } else {
                     Log.d(TAG, "stop and wait Final Result");
                     btnStart.setEnabled(false);
-
                     naverRecognizer.getSpeechRecognizer().stop();
+                    btnStart.performClick();
                 }
             }
         });
+
+        btnStart.performClick();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    boolean btnEnabled = btnStart.isEnabled();
+                    if (!recognized) {
+
+                        btnStart.performClick();
+                    }
+                }
+            }
+        }).start();
 
         return view;
     }
