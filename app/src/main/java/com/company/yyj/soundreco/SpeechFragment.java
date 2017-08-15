@@ -45,7 +45,7 @@ public class SpeechFragment extends Fragment {
     private NaverRecognizer naverRecognizer;
 
     private TextView txtResult;
-    private ImageView btnStart;
+    public static ImageView btnStart;
     private String mResult;
 
     private AudioWriterPCM writer;
