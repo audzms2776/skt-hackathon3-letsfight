@@ -125,14 +125,11 @@ public class SpeechFragment extends Fragment {
             case "옷장":
                 filterFlag = sendSocketMessage(3);
                 break;
-            case "추천":
+            case "다음":
                 filterFlag = sendSocketMessage(4);
                 break;
-            case "오른쪽":
+            case "이전":
                 filterFlag = sendSocketMessage(5);
-                break;
-            case "왼쪽":
-                filterFlag = sendSocketMessage(6);
                 break;
             default:
                 Log.e("filter string", "인식 오류~");
