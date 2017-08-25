@@ -24,7 +24,7 @@ class SocketSound {
 
     {
         try {
-            mSocket = IO.socket(MyConstant.SOCKET_ADDR);
+            mSocket = IO.socket(MyConstant.SOCKETIO_ADDR);
             Log.e("ss", String.valueOf(mSocket));
         } catch (URISyntaxException e) {
             e.printStackTrace();

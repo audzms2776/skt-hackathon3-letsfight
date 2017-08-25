@@ -78,7 +78,11 @@ public class SpeechFragment extends Fragment {
                 List<String> uniqueItems = new ArrayList<>(new HashSet<>(results));
                 processBySound(uniqueItems);
                 Log.e("items", uniqueItems.toString());
-                mp.start();
+
+                if (uniqueItems.size() != 0) {
+                    mp.start();
+                }
+
                 break;
 
             case R.id.recognitionError:
@@ -115,11 +119,11 @@ public class SpeechFragment extends Fragment {
         switch (item) {
             case "hi":
             case "하이":
-                filterFlag = sendSocketMessage(1);
+                filterFlag = sendSocketMessage("activate");
                 break;
             case "by":
             case "바이":
-                filterFlag = sendSocketMessage(2);
+                filterFlag = sendSocketMessage("deactivate");
                 break;
             case "옷장":
                 filterFlag = sendSocketMessage(3);
@@ -130,11 +134,38 @@ public class SpeechFragment extends Fragment {
             case "이전":
                 filterFlag = sendSocketMessage(5);
                 break;
+            case "집중연습":
+            case "집중 연습":
+                filterFlag = sendSocketMessage("practice-1");
+                break;
+            case "웃는연습":
+            case "웃는 연습":
+                filterFlag = sendSocketMessage("practice-2");
+                break;
             default:
                 Log.e("filter string", "인식 오류~");
         }
 
         return filterFlag;
+    }
+
+    private boolean sendSocketMessage(final String s) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Socket socket = new Socket(MyConstant.SOCKET_ADDR, MyConstant.SOCKET_PORT);
+                    OutputStreamWriter outputStream = new OutputStreamWriter(socket.getOutputStream());
+                    Log.e("socket write data", s);
+                    outputStream.write(s + "\n");
+                    outputStream.close();
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        return true;
     }
 
     private boolean sendSocketMessage(final int num) {
