@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.naver.speech.clientapi.SpeechRecognitionResult;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.ref.WeakReference;
 import java.net.Socket;
