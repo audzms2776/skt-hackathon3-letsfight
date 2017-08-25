@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 
 /**
- * Created by LikeJust on 2017-08-24.
+ * Created by LikeJust on 2017-08-25.
  */
 
 class SocketSound {
@@ -40,13 +40,13 @@ class SocketSound {
     private int selectMusic(String type) {
         int musicId = 0;
         switch (type) {
-            case "1":
-                musicId = R.raw.bell;
+            case "bitter":
+                musicId = R.raw.bad;
                 break;
-            case "2":
-                musicId = R.raw.water;
+            case "weird":
+                musicId = R.raw.good;
                 break;
-            case "3":
+            default:
                 musicId = R.raw.effectsound;
                 break;
 
