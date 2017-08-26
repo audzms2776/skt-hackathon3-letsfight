@@ -14,7 +14,7 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 
 /**
- * Created by LikeJust on 2017-08-24.
+ * Created by LikeJust on 2017-08-25.
  */
 
 class SocketSound {
@@ -24,7 +24,7 @@ class SocketSound {
 
     {
         try {
-            mSocket = IO.socket(MyConstant.SOCKET_ADDR);
+            mSocket = IO.socket(MyConstant.SOCKETIO_ADDR);
             Log.e("ss", String.valueOf(mSocket));
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -40,13 +40,13 @@ class SocketSound {
     private int selectMusic(String type) {
         int musicId = 0;
         switch (type) {
-            case "1":
-                musicId = R.raw.bell;
+            case "bitter":
+                musicId = R.raw.bad;
                 break;
-            case "2":
-                musicId = R.raw.water;
+            case "weird":
+                musicId = R.raw.good;
                 break;
-            case "3":
+            default:
                 musicId = R.raw.effectsound;
                 break;
 
@@ -56,13 +56,14 @@ class SocketSound {
     }
 
     private void soundPlay(String type) {
-        if (media != null) {
-            media.stop();
+        if (media == null) {
+            media = MediaPlayer.create(context, selectMusic(type));
+            media.start();
+        } else if (!media.isPlaying()) {
             media.release();
+            media = MediaPlayer.create(context, selectMusic(type));
+            media.start();
         }
-
-        media = MediaPlayer.create(context, selectMusic(type));
-        media.start();
     }
 
     private Emitter.Listener onNewSoundMsg = new Emitter.Listener() {
