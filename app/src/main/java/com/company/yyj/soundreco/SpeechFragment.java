@@ -119,9 +119,15 @@ public class SpeechFragment extends Fragment {
         switch (item) {
             case "hi":
             case "하이":
+            case "파이":
+            case "다이":
+            case "아이":
+            case "나이":
+            case "화이":
                 filterFlag = sendSocketMessage("activate");
                 break;
             case "by":
+            case "bye":
             case "바이":
                 filterFlag = sendSocketMessage("deactivate");
                 break;
@@ -141,6 +147,9 @@ public class SpeechFragment extends Fragment {
             case "웃는연습":
             case "웃는 연습":
                 filterFlag = sendSocketMessage("practice-2");
+                break;
+            case "그만":
+                filterFlag = sendSocketMessage("close-video");
                 break;
             default:
                 Log.e("filter string", "인식 오류~");
