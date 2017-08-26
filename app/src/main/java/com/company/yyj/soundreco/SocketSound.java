@@ -56,13 +56,14 @@ class SocketSound {
     }
 
     private void soundPlay(String type) {
-        if (media != null) {
-            media.stop();
+        if (media == null) {
+            media = MediaPlayer.create(context, selectMusic(type));
+            media.start();
+        } else if (!media.isPlaying()) {
             media.release();
+            media = MediaPlayer.create(context, selectMusic(type));
+            media.start();
         }
-
-        media = MediaPlayer.create(context, selectMusic(type));
-        media.start();
     }
 
     private Emitter.Listener onNewSoundMsg = new Emitter.Listener() {

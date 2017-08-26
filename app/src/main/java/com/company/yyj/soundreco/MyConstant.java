@@ -5,7 +5,7 @@ package com.company.yyj.soundreco;
  */
 
 public class MyConstant {
-    static final String SOCKET_ADDR = "192.168.1.5";
-    static final String SOCKETIO_ADDR = "http://192.168.1.5:3000";
+    static final String SOCKET_ADDR = "192.168.43.182";
+    static final String SOCKETIO_ADDR = "http://192.168.43.182:3000";
     static final int SOCKET_PORT = 4444;
 }
